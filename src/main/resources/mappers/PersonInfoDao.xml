@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper 標籤: 用來定義操作資料庫方法的 SQL 語句 -->
+<!-- namespace: 用來綁定特定 Dao 介面 -->
+<mapper namespace="com.example.mybatis.dao.PersonInfoDao">
+
+	<!-- insert 元素: 對應於 SQL 中的 insert -->
+	<!-- id: 綁定介面 dao 裡的方法名稱；等號後面的字串就是方法名稱 -->
+	<insert id="addInfo">
+		<!-- 原生 SQL 語句 -->
+		<!-- #{變數名稱}: 對應到 Dao 的方法參數中 @Param("變數名稱") -->
+		insert into person_info (id, user_name, age, city) 
+		  values (#{inputId}, #{inputName}, #{inputAge}, #{inputCity})
+	</insert>
+	
+	<insert id="addInfo2">
+		<!-- 原生 SQL 語句 -->
+		insert into person_info (id, user_name, age, city) 
+		  values (#{id}, #{userName}, #{age}, #{city})
+	</insert>
+	
+	<!-- select 元素: 對應於 SQL 中的 select -->
+	<!-- resultType: select 的結果要放到哪個容器(dto)中 -->
+	<select id="selectByNameAndCity" resultType="com.example.mybatis.dto.PersonInfo">
+		<!-- 原生 SQL 語句 -->
+		select id, user_name, age, city from person_info 
+		  where user_name = #{userName} and city = #{city}
+	</select>	
+	
+	<select id="selectById" resultType="com.example.mybatis.dto.PersonInfo">
+	    <!-- 撈取全部的欄位，建議全列出來，不要使用符號 * -->
+		<!-- #{0}: 對應到 Dao 的方法中第一個位置的參數；index 從 0 開始 -->
+		select id, user_name, age, city from person_info 
+		  where id = #{0}
+	</select>
+	
+	<select id="selectByIdList" resultType="com.example.mybatis.dto.PersonInfo">
+		select id, user_name, age, city from person_info
+		  where id in
+			<foreach item="idItem" collection="idList" open="(" separator="," close=")">
+				#{idItem}
+			</foreach>			
+	</select>
+</mapper>
+
